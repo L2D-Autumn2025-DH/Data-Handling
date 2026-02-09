@@ -169,14 +169,25 @@ ssl_context = ssl._create_unverified_context()</code></pre>
             </div>
             
         </div>
-        <p>Lastly, we must then import the function <code>urlopen</code> and the class <code>BytesIO</code>, where the former allows us to open the URL as raw binary data, and the latter wraps this into memory, simulating a file object. This allows us to work with this online, remotely-hosted large image, from its remote location. Please be patient - this step can take time, and will depend on the speed of your internet connection.</p>
+        <p>Lastly, we must then import the <strong>requests</strong> library and the class <code>BytesIO</code>. The requests library provides a simple way to download files from the internet, downloadinh it in smalled <em>chunks</em> of memory to prevent crashes, and <code>BytesIO</code> wraps the downloaded data into memory, simulating a file object. This allows us to work with this online, remotely-hosted large image from its remote location.</p>
+        <div class="info-box note-box">
+            <div class="box-title">
+                <span class="box-icon"></span>
+                NOTE
+            </div>
+            <div class="box-content">
+                <p>If you are running this as notebook, please be patient as this step can take time, and will depend on the speed of your internet connection.</p>
+            </div>
+        </div>
+        
         <div class="code-area">
             <div class="code-container code-fixed">
-                <pre><code class="language-python" id="code-31">from urllib.request import urlopen
+                <pre><code class="language-python" id="code-31">import requests
 from io import BytesIO
 
-# Consolidate into &#x27;remote_image&#x27;
-remote_image = BytesIO(urlopen(url, context=ssl_context).read())</code></pre>
+# Download and consolidate into `remote_image`
+response = requests.get(url, verify=False)
+remote_image = BytesIO(response.content)</code></pre>
             </div>
             
         </div>
@@ -190,7 +201,7 @@ remote_image = BytesIO(urlopen(url, context=ssl_context).read())</code></pre>
                 <p>This demonstrates how to read a remotely-hosted image into memory. However, if you wish to try this with a large image stored locally on your computer you can bypass the steps above and use the lines of code that is commented out in the cells below, instead of the line immediately above.</p>
             </div>
         </div>
-        <p>Next, we can read the image into Python, using the imread() function. However, if we do this plainly, we will receive a warning from Python indicating that the &quot;Image size (324649360 pixels) exceeds limit of 178956970 pixels, could be decompression bomb DOS attack.&quot; This alludes to a potential malicious file, designed to crash or cause disruption by using consuming large amounts of memory.<br><br>We can get around this by changing the maximum pixel limit, for which we will require the Image module from the Python Imaging Library (PIL). We will make use of the <code>MAX_IMAGE_PIXELS</code> class-level attribute in order to do this, as follows:</p>
+        <p>Next, we can read the image into Python, using the imread() function. However, if we do this plainly, we will receive a warning from Python indicating that the &quot;Image size ($324649360$ pixels) exceeds limit of $178956970$ pixels, could be decompression bomb DOS attack.&quot; This alludes to a potential malicious file, designed to crash or cause disruption by using consuming large amounts of memory.<br><br>We can get around this by changing the maximum pixel limit, for which we will require the Image module from the Python Imaging Library (PIL). We will make use of the <code>MAX_IMAGE_PIXELS</code> class-level attribute in order to do this, as follows:</p>
         <div class="code-area">
             <div class="code-container code-fixed">
                 <pre><code class="language-python" id="code-32">from PIL import Image
